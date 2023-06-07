@@ -2,8 +2,6 @@ openapi: 3.1.0
 info:
   title: One Time Password as a Service
   description: Generate and verify a one time password.
-  contact:
-    email: pastro.craig@gmail.com
   license:
     name: MIT
     url: https://github.com/craigpastro/otpaas/blob/main/LICENSE
