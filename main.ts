@@ -4,7 +4,7 @@ import * as h from "./handlers.ts";
 
 export const app = new Hono();
 
-app.post("/v1/get", h.createOtp);
-app.post("/v1/verify", h.verifyOtp);
+app.post("/v1/otp/get", h.createOtp);
+app.post("/v1/otp/verify", h.verifyOtp);
 
 serve(app.fetch, { port: 8080 });

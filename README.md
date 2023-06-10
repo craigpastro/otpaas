@@ -3,17 +3,17 @@
 Generate and verify OTPs. See the [OpenAPI spec](./openapi.yaml) for a
 description of the endpoints.
 
-> This is part of my playing with [Deno Deploy](https://deno.com/deploy) series.
+> Part of my playing with [Deno Deploy](https://deno.com/deploy) series.
 
 ## Usage
 
 Create an OTP:
 
 ```
-$ curl -XPOST 'https://otpaas.deno.dev/v1/get' \
+$ curl -XPOST 'https://otpaas.deno.dev/v1/otp/get' \
 -H 'Content-Type: application/json' \
 -d '{
-    "id": "foo"
+    "key": "foo"
 }'
 {"password":"203211","expiresAt":1686116478274}
 ```
@@ -21,10 +21,10 @@ $ curl -XPOST 'https://otpaas.deno.dev/v1/get' \
 Verify the OTP:
 
 ```
-$ curl -XPOST 'https://otpaas.deno.dev/v1/verify' \
+$ curl -XPOST 'https://otpaas.deno.dev/v1/otp/verify' \
 -H 'Content-Type: application/json' \
 -d '{
-    "id": "foo",
+    "key": "foo",
     "password": "203211"
 }'
 {"verified":true}
