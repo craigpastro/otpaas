@@ -1,5 +1,5 @@
-import { Context, HTTPException } from "https://deno.land/x/hono/mod.ts";
-import { passwordGenerator } from "https://deno.land/x/password_generator/mod.ts";
+import { Context, HTTPException } from "https://deno.land/x/hono@v3.2.5/mod.ts";
+import { passwordGenerator } from "https://deno.land/x/password_generator@latest/mod.ts";
 
 interface Data {
   password: string;
