@@ -1,5 +1,5 @@
-import { Context, HTTPException } from "https://deno.land/x/hono/mod.ts";
-import { passwordGenerator } from "https://deno.land/x/password_generator/mod.ts";
+import { Context, HTTPException } from "https://deno.land/x/hono@v3.2.5/mod.ts";
+import { passwordGenerator } from "https://deno.land/x/password_generator@latest/mod.ts";
 
 interface Data {
   password: string;
@@ -10,7 +10,7 @@ const kv = await Deno.openKv();
 
 export async function createOtp(c: Context) {
   const body = await c.req.json();
-  if (!body || !body.id) {
+  if (!body || !body.key) {
     throw new HTTPException(400, { message: "error in request body" });
   }
 
@@ -22,18 +22,18 @@ export async function createOtp(c: Context) {
     expiresAt: Date.now() + duration,
   };
 
-  await kv.set([body.id], data);
+  await kv.set(["key", body.key], data);
 
   return c.json(data);
 }
 
 export async function verifyOtp(c: Context) {
   const body = await c.req.json();
-  if (!body || !body.id || !body.password) {
+  if (!body || !body.key || !body.password) {
     throw new HTTPException(400, { message: "error in request body" });
   }
 
-  const res = await kv.get<Data>([body.id]);
+  const res = await kv.get<Data>(["key", body.key]);
   const data = res.value;
 
   if (!data) {
@@ -41,7 +41,7 @@ export async function verifyOtp(c: Context) {
   }
 
   if (data.expiresAt < Date.now()) {
-    await kv.delete([body.id]); // lazily clean up
+    await kv.delete([body.key]); // lazily clean up
     return c.json({ verified: false });
   }
 

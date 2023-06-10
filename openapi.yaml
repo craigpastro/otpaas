@@ -11,7 +11,7 @@ servers:
 tags:
   - name: otp
 paths:
-  /v1/get:
+  /v1/otp/get:
     post:
       tags:
         - otp
@@ -23,10 +23,10 @@ paths:
           application/json:
             schema:
               required:
-                - id
+                - key
               type: object
               properties:
-                id:
+                key:
                   type: string
                   example: foo
                 duration:
@@ -52,7 +52,7 @@ paths:
           description: Bad Request
         '500':
           description: Internal Server Error
-  /v1/verify:
+  /v1/otp/verify:
     post:
       tags:
         - otp
@@ -64,11 +64,11 @@ paths:
           application/json:
             schema:
               required:
-                - id
+                - key
                 - password
               type: object
               properties:
-                id:
+                key:
                   type: string
                   example: foo
                 password:
