@@ -22,7 +22,7 @@ export async function createOtp(c: Context) {
     expiresAt: Date.now() + duration,
   };
 
-  await kv.set(["key", body.key], data);
+  await kv.set(["keys", body.key], data);
 
   return c.json(data);
 }
@@ -33,7 +33,7 @@ export async function verifyOtp(c: Context) {
     throw new HTTPException(400, { message: "error in request body" });
   }
 
-  const res = await kv.get<Data>(["key", body.key]);
+  const res = await kv.get<Data>(["keys", body.key]);
   const data = res.value;
 
   if (!data) {
@@ -41,7 +41,7 @@ export async function verifyOtp(c: Context) {
   }
 
   if (data.expiresAt < Date.now()) {
-    await kv.delete([body.key]); // lazily clean up
+    await kv.delete(["keys", body.key]); // lazily clean up
     return c.json({ verified: false });
   }
 
