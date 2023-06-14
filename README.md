@@ -7,6 +7,21 @@ description of the endpoints.
 
 ## Usage
 
+### With the SDK
+
+```js
+import { OtpClient } from "https://raw.githubusercontent.com/craigpastro/otpaas/main/sdk/mod.ts";
+
+const client = new OtpClient();
+
+const key = "foo@bar.com";
+
+const resp = await client.get(key);
+console.log(await client.verify(key, resp.password));
+```
+
+### Or without
+
 Create an OTP:
 
 ```
