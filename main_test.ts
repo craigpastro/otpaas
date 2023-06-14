@@ -5,7 +5,7 @@ import {
   assertFalse,
 } from "https://deno.land/std@0.190.0/testing/asserts.ts";
 import { sleep } from "https://deno.land/x/sleep@v1.2.1/mod.ts";
-import { app } from "./server.ts";
+import { app } from "./main.ts";
 
 const baseUrl = "http://localhost:8080";
 const getUrl = baseUrl + "/v1/otp/get";
