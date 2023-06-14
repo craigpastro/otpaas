@@ -7,10 +7,12 @@ import {
 import { sleep } from "https://deno.land/x/sleep@v1.2.1/mod.ts";
 import { app } from "./main.ts";
 
-const baseUrl = "http://localhost:8080/v1/otp/";
+const baseUrl = "http://localhost:8080";
+const getUrl = baseUrl + "/v1/otp/get";
+const verifyUrl = baseUrl + "/v1/otp/verify";
 
 Deno.test("create otp", async () => {
-  const req = new Request(baseUrl + "get", {
+  const req = new Request(getUrl, {
     method: "POST",
     body: JSON.stringify({ key: "foo" }),
   });
@@ -22,8 +24,8 @@ Deno.test("create otp", async () => {
   assertExists(body.expiresAt);
 });
 
-Deno.test("create and get otp", async () => {
-  const getReq = new Request(baseUrl + "get", {
+Deno.test("create and verify otp", async () => {
+  const getReq = new Request(getUrl, {
     method: "POST",
     body: JSON.stringify({ key: "foo" }),
   });
@@ -32,7 +34,7 @@ Deno.test("create and get otp", async () => {
 
   const getBody = await getRes.json();
 
-  const verifyReq = new Request(baseUrl + "verify", {
+  const verifyReq = new Request(verifyUrl, {
     method: "POST",
     body: JSON.stringify({ key: "foo", password: getBody.password }),
   });
@@ -42,8 +44,8 @@ Deno.test("create and get otp", async () => {
   assert(verifyBody.verified);
 });
 
-Deno.test("create, wait until expire, and try to get otp", async () => {
-  const getReq = new Request(baseUrl + "get", {
+Deno.test("create, wait until expire, and try to verify otp", async () => {
+  const getReq = new Request(getUrl, {
     method: "POST",
     body: JSON.stringify({
       key: "foo",
@@ -57,7 +59,7 @@ Deno.test("create, wait until expire, and try to get otp", async () => {
 
   await sleep(1); // wait for the otp to expire
 
-  const verifyReq = new Request(baseUrl + "verify", {
+  const verifyReq = new Request(verifyUrl, {
     method: "POST",
     body: JSON.stringify({ key: "foo", password: getBody.password }),
   });
@@ -71,7 +73,7 @@ Deno.test("create and create and the old one doesn't verify", async () => {
   const key = "foo";
 
   const g1Res = await app.request(
-    new Request(baseUrl + "get", {
+    new Request(getUrl, {
       method: "POST",
       body: JSON.stringify({ key }),
     }),
@@ -83,7 +85,7 @@ Deno.test("create and create and the old one doesn't verify", async () => {
 
   // get a new code
   const g2Res = await app.request(
-    new Request(baseUrl + "get", {
+    new Request(getUrl, {
       method: "POST",
       body: JSON.stringify({ key }),
     }),
@@ -94,7 +96,7 @@ Deno.test("create and create and the old one doesn't verify", async () => {
   const g2password = g2ResBody.password;
 
   // The old password should not verify
-  const v1Req = new Request(baseUrl + "verify", {
+  const v1Req = new Request(verifyUrl, {
     method: "POST",
     body: JSON.stringify({ key: "foo", password: g1password }),
   });
@@ -103,7 +105,7 @@ Deno.test("create and create and the old one doesn't verify", async () => {
   assertFalse(v1Body.verified);
 
   // But the new one should
-  const v2Req = new Request(baseUrl + "verify", {
+  const v2Req = new Request(verifyUrl, {
     method: "POST",
     body: JSON.stringify({ key: "foo", password: g2password }),
   });
